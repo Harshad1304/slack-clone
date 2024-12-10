@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import StarPurple500Icon from '@mui/icons-material/StarPurple500';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ChatInput from '../ChatInput/ChatInput.jsx'
-import { useSelector } from 'react-redux';
-import {  selectRoomId } from '../../features/appSlice.js';
+import {  useSelector } from 'react-redux';
+import {   selectRoomId } from '../../features/appSlice.js';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 import {  collection, doc, orderBy, query } from 'firebase/firestore';
 import { db } from '../../firebase.js';
 import Message from '../Message/Message.jsx';
+import LoadingComp from '../LoadingComp/LoadingComp.jsx';
 function Chat() {
 
     const chatRef = useRef(null)
@@ -27,22 +28,32 @@ function Chat() {
     );
     
     
-    const [roomMessages,loading] = useCollection(messagesQuery);
+    const [roomMessages,isLoading] = useCollection(messagesQuery);
     
+    
+
     useEffect(()=>{
        
-
         // Scoll Bottom on pageload
         chatRef?.current?.scrollIntoView({
             behavior:"smooth",
         });
-    },[roomId,loading,roomMessages])
+    },[roomId,isLoading,roomMessages])
 
+
+        // Loading indicator 
+        if(isLoading){
+            return(
+                <LoadingComp />
+            )
+        }
   return (
     <ChatContainer>
         {roomDetails && roomMessages &&(
             <>
+           
             <Header>
+                
                     <HeaderLeft>
                         <h4><strong>#Room-{roomDetails?.data().name}</strong>
                        
@@ -56,6 +67,7 @@ function Chat() {
             </Header>
             
             <ChatMessages>
+            
                     {/* list out the messages */}
                     {roomMessages?.docs.map((doc)=>{
                         const {message,timeStamp,user,userImage} =doc.data();
@@ -84,6 +96,11 @@ function Chat() {
 }
 
 export default Chat
+
+const ChatLoading = styled.div`
+    height: 100vh;
+    background-color: black;
+`
 
 const ChatBottom = styled.div`
     padding-bottom: 200px;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import styled from "styled-components";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -24,6 +24,7 @@ function SideBar() {
     // console.log(channels?.docs.map((doc) => doc.data().name));
     const [user] = useAuthState(auth)
     
+
   return (
     <SidebarContainer>
       <SidebarHeader>
